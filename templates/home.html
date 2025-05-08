@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NFL Award Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #555;
+            font-size: large;
+        }
+    </style>
+</head>
+<body>
+    {% load custom_filters %}
+    <div style="text-align: center;">
+        <h1>Welcome to the NFL Award Predictor!</h1>
+        <p>Explore player's past seasons and predictions for future NFL awards.</p>
+        <button> Click </button>
+    </div>
+        <p>Minimum 50 QB plays</p>
+        <table border="1" style="text-align: center;">
+            <thead>
+                <tr>
+                    <th>Season</th>
+                    <th>Season Type</th>
+                    <th>Player Name</th>
+                    <th>Team</th>
+                    <th>Team Record</th>
+                    <th>QBR</th>
+                    <th>EPA</th>
+                    <th>Pass EPA</th>
+                    <th>Rush EPA</th>
+                    <th>Penalty EPA</th>
+                    <th>QB plays</th>
+                    <th>EPA per Play</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for qb in qb_qbr %}
+                <tr>
+                    <td>{{ qb.season }}</td>
+                    <td>{{ qb.season_type }}</td>
+                    <td>{{ qb.name_first }} {{qb.name_last }}</td>
+                    <td>{{ qb.team }}</td>
+                    <td></td>
+                    <td>{{ qb.qbr_total }}</td>
+                    <td>{{ qb.epa_total }}</td>
+                    <td>{{ qb.pass }}</td>
+                    <td>{{ qb.run }}</td>
+                    <td>{{ qb.penalty }}</td>
+                    <td>{{ qb.qb_plays }}</td>
+                    <td>{{ qb.epa_total|divide:qb.qb_plays }}</td>
+                </tr>
+                {% endfor %}
+                {% for qb in curr_qbr %}
+                <tr>
+                    <td>{{ qb.player_name }}</td>
+                    <td>{{ qb.team }}</td>
+                    <td>{{ qb.qbr_total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+</body>
+</html>
