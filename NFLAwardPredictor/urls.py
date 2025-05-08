@@ -16,8 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from NFLAwardPredictor.views import home
-from NFLAwardPredictor.views import about
+from predictor.views import home
+from predictor.views import about
 
 urlpatterns = [
     path('admin/', admin.site.urls),   # Admin site URL 
