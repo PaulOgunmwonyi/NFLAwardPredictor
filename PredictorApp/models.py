@@ -9,12 +9,14 @@ from sklearn.ensemble import RandomForestClassifier
 import joblib
 from .data import record_data
 
-qb_qbr = nfl.import_qbr(range(2022,2024))
+# Load the data from nfl_data_py
+qb_qbr = nfl.import_qbr(range(2018,2024))
 url = "https://github.com/nflverse/nflverse-data/releases/download/espn_data/qbr_season_level.parquet"
 curr_qbr = pd.read_parquet(url).loc[lambda x: x.season == 2024].reset_index(drop=True)
-qb_data = nfl.import_ngs_data('passing', range(2022, 2025))
-sack_data = nfl.import_seasonal_data(range(2022, 2025))
+qb_data = nfl.import_ngs_data('passing', range(2018, 2025))
+sack_data = nfl.import_seasonal_data(range(2018, 2025))
 
+# Filter the data and combine the 3 data sources 
 id_df = nfl.import_ids()
 id_df = id_df[['gsis_id','name']]
 sack_data = pd.merge(sack_data, id_df, left_on = 'player_id', right_on = 'gsis_id', how ='left')
@@ -32,12 +34,8 @@ data = data[[
     'wins',            
     'losses',          
     'qbr_total',       
-    'epa_total',   
-    'pass',            
-    'run',             
-    'penalty',        
-    'qb_plays',
-    'sack'         
+    'epa_total',          
+    'qb_plays'        
 ]]
 data['epa_per_play'] = data['epa_total'] / data['qb_plays']
 qb_data_relevant = qb_data[[
@@ -76,21 +74,20 @@ data = data.merge(
 data = data.drop(columns=['name', 'full_name'])
 data = data.drop_duplicates()
 
-# adding data to important players left out 
+# adding data to important players left out (MVP candidates)
 data.loc[(data['season'] == 2024) & (data['name_first'] == 'Josh') & (data['name_last'] == 'Allen'), 'passer_rating'] = 101.4
 data.loc[(data['season'] == 2023) & (data['name_first'] == 'Josh') & (data['name_last'] == 'Allen'), 'passer_rating'] = 92.2
 data.loc[(data['season'] == 2023) & (data['name_first'] == 'Dak') & (data['name_last'] == 'Prescott'), 'passer_rating'] = 105.9
 
+# calculations for MVP
 weights = {
     'qbr_total' : .5,
     'epa_total' : .5,
     'epa_per_play' : 25,
-    'pass' : .15,
-    'run' : .1,
     'qb_plays' : .0025,
     'sacks' : -1.5,
     'passing_tds' : .75,
-    'interceptions' : -1.75,
+    'interceptions' : -2,
     'passing_yards' : .005,
     'passer_rating' : .5,
     'rushing_yards' : .005,
@@ -102,8 +99,6 @@ data['score'] = (
     weights['qbr_total'] * data['qbr_total'] +
     weights['epa_total'] * data['epa_total'] +
     weights['epa_per_play'] * data['epa_per_play'] +
-    weights['pass'] * data['pass'] +
-    weights['run'] * data['run'] +
     weights['qb_plays'] * data['qb_plays'] +
     weights['sacks'] * data['sacks'] +  
     weights['passing_tds'] * data['passing_tds'] +  
@@ -115,10 +110,9 @@ data['score'] = (
 )
 data['mvp'] = data.groupby('season')['score'].transform(lambda x: x == x.max()).astype(int)
 
-# Step 1: Prepare the data
 # Define features and target
 features = [
-    'wins', 'qbr_total', 'epa_total', 'epa_per_play', 'pass', 'run', 
+    'wins', 'qbr_total', 'epa_total', 'epa_per_play',
     'qb_plays', 'sacks', 'passing_tds', 'interceptions', 
     'passing_yards', 'passer_rating', 'rushing_yards', 'rushing_tds'
 ]
@@ -129,23 +123,13 @@ X = data[features]
 y = data[target]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Step 2: Choose a model
+# Choose a model
 pipeline = Pipeline([
     ('imputer', SimpleImputer(strategy='mean')),  # Handle missing values
     ('model', RandomForestClassifier(random_state=42, class_weight='balanced'))  # Train the model
 ])
 
-# Step 3: Train the model
+# Train the model
 pipeline.fit(X_train, y_train)
-
-# Step 4: Evaluate the model
-#y_pred = model.predict(X_test)
-#print("Accuracy:", accuracy_score(y_test, y_pred))
-#print("Classification Report:\n", classification_report(y_test, y_pred))
-
-# Step 5: Make predictions
-#data['predicted_mvp'] = model.predict(X)
-#predicted_mvp = data[data['predicted_mvp'] == 1][['season', 'name_first', 'name_last', 'team', 'score']]
-#print(predicted_mvp)
 
 joblib.dump(pipeline, 'nfl_mvp_model.pkl')

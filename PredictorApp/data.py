@@ -1,4 +1,9 @@
 record_data = [
+    # adding wins and losses data to the players who already got calculated to win MVP for display purposes 
+    { 'team': 'Chiefs', 'year': '2018', 'wins': 12, 'losses': 4 },
+    { 'team': 'Ravens', 'year': '2019', 'wins': 14, 'losses': 2 },
+    { 'team': 'Packers', 'year': '2020', 'wins': 13, 'losses': 3 },
+    { 'team': 'Buccaneers', 'year': '2021', 'wins': 13, 'losses': 4 },
     # 2022 Records
     { 'team': 'Chiefs', 'year': '2022', 'wins': 14, 'losses': 3 },
     { 'team': 'Eagles', 'year': '2022', 'wins': 14, 'losses': 3 },
