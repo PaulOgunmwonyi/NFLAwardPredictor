@@ -30,7 +30,6 @@
             <thead>
                 <tr>
                     <th>Season</th>
-                    <th>Season Type</th>
                     <th>Player Name</th>
                     <th>Team</th>
                     <th>Team Record</th>
@@ -47,10 +46,15 @@
                 {% for qb in qb_qbr %}
                 <tr>
                     <td>{{ qb.season }}</td>
-                    <td>{{ qb.season_type }}</td>
                     <td>{{ qb.name_first }} {{qb.name_last }}</td>
                     <td>{{ qb.team }}</td>
-                    <td></td>
+                    <td>
+                        {% for record in record_data %}
+                            {% if record.team == qb.team and record.year == qb.season %}
+                                {{ record.wins }}-{{ record.losses }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td>{{ qb.qbr_total }}</td>
                     <td>{{ qb.epa_total }}</td>
                     <td>{{ qb.pass }}</td>
@@ -63,10 +67,15 @@
                 {% for qb in curr_qbr %}
                 <tr>
                     <td>{{ qb.season }}</td>
-                    <td>{{ qb.season_type }}</td>
                     <td>{{ qb.name_first }} {{qb.name_last }}</td>
                     <td>{{ qb.team }}</td>
-                    <td></td>
+                    <td>
+                        {% for record in record_data %}
+                            {% if record.team == qb.team and record.year == qb.season %}
+                                {{ record.wins }}-{{ record.losses }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td>{{ qb.qbr_total }}</td>
                     <td>{{ qb.epa_total }}</td>
                     <td>{{ qb.pass }}</td>

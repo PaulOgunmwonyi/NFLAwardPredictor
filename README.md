@@ -1,8 +1,12 @@
-Notes:
+# NFL Awards Predictor
+
+
+Notes to self:
 
 NFL data collected from:
 - https://pypi.org/project/nfl-data-py/
 - REQUIRES PYTHON VERSION < 13
+- https://rowzero.io/blog/nfl-data-py-in-a-spreadsheet-nfl-stats
 
 Requires python, pip, and django to be installed
 - https://docs.djangoproject.com/en/5.2/intro/tutorial01/
