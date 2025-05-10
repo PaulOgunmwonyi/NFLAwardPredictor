@@ -23,11 +23,11 @@
             background-color: white;
             padding: 20px;
             border-radius: 10px;
+            margin: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         table {
-        margin: 20px auto; 
-        border-collapse: collapse;
+            border-collapse: collapse;
         }
         th, td {
             padding: 5px;
@@ -39,6 +39,57 @@
     <div>
         <h1>Welcome to the NFL MVP Award Predictor!</h1>
         <p>As a passionate NFL fan who enjoys analyzing player film and debating MVP contenders each season, I set out to create a tool that mirrors the logic behind MVP predictions—similar to those used by betting algorithms—but powered by user input. The result is a machine learning model that predicts the NFL MVP with 87% accuracy across the past seven seasons, with the only miss being 2021 Tom Brady, who finished second in MVP voting. Users can enter hypothetical quarterback stats, and the model will evaluate whether those numbers would likely secure the MVP title in today’s NFL landscape.</p>
+        <div class="container">
+            <form method="POST">
+                {% csrf_token %}
+                <label for="wins">Wins:</label>
+                <input type="number" id="wins" name="wins" step="1" required><br>
+        
+                <label for="qbr_total">QBR Total:</label>
+                <input type="number" step="0.1" id="qbr_total" name="qbr_total" required><br>
+        
+                <label for="epa_total">EPA Total:</label>
+                <input type="number" step="0.1" id="epa_total" name="epa_total" required><br>
+        
+                <label for="epa_per_play">EPA Per Play:</label>
+                <input type="number" step="0.0001" id="epa_per_play" name="epa_per_play" required><br>
+        
+                <label for="qb_plays">QB Plays:</label>
+                <input type="number" id="qb_plays" name="qb_plays" step="1" required><br>
+        
+                <label for="sacks">Sacks:</label>
+                <input type="number" id="sacks" name="sacks" step="1" required><br>
+        
+                <label for="passing_tds">Passing TDs:</label>
+                <input type="number" id="passing_tds" name="passing_tds" step="1" required><br>
+        
+                <label for="interceptions">Interceptions:</label>
+                <input type="number" id="interceptions" name="interceptions" step="1" required><br>
+        
+                <label for="passing_yards">Passing Yards:</label>
+                <input type="number" id="passing_yards" name="passing_yards" step="1" required><br>
+        
+                <label for="passer_rating">Passer Rating:</label>
+                <input type="number" step="0.1" id="passer_rating" name="passer_rating" required><br>
+        
+                <label for="rushing_yards">Rushing Yards:</label>
+                <input type="number" id="rushing_yards" name="rushing_yards" step="1" required><br>
+        
+                <label for="rushing_tds">Rushing TDs:</label>
+                <input type="number" id="rushing_tds" name="rushing_tds" step="1" required><br>
+        
+                <button type="submit">Predict MVP</button>
+            </form>
+        
+            {% if prediction %}
+                <h2>Prediction: {{ prediction }}</h2>
+            {% endif %}
+
+            {% if graph_url %}
+                <h2>Comparison Graph</h2>
+                <img src="{{ graph_url }}" alt="Comparison Graph">
+            {% endif %}
+        </div>
         <div class="container">
             <p>Model-predicted MVPs: </p>
             <table border="1" style="text-align: center;">
