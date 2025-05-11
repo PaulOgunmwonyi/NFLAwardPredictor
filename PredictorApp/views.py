@@ -37,8 +37,11 @@ def home(request):
         }
         input_df = pd.DataFrame([input_data])
         probabilities = model.predict_proba(input_df)
-        prediction = 'Likely MVP' if probabilities[0][1] >= 0.3 else 'Unlikely MVP'
-
+        prediction = (
+            f"The model gives a {probabilities[0][1] * 100:.2f}% probability of being MVP. "
+            f"{'That is high enough and they would likely win MVP' if probabilities[0][1] >= 0.3 else 'That is not high enough and they would likely not win MVP'}"
+        )
+        
         # Create a bar graph
         mvp_data = filtered_data[6]
         categories = list(input_data.keys())
@@ -56,7 +59,7 @@ def home(request):
 
         plt.xlabel('Categories')
         plt.ylabel('Values')
-        plt.title('Comparison of MVP vs User Input')
+        plt.title('Comparison of 2024 NFL MVP Winner Josh Allen vs User Input Data')
         plt.xticks([i + bar_width / 2 for i in x], categories, rotation=45, ha='right')
         plt.legend()
 
